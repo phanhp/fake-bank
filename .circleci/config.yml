@@ -1,0 +1,51 @@
+version: 2.1 # 2.1 config required to use orbs
+
+orbs:
+  aws-ecr: circleci/aws-ecr@9.3.5 # use the AWS ECR orb
+  aws-ecs: circleci/aws-ecs@6.0.0 # use the AWS ECS orb
+  aws-cli: circleci/aws-cli@5.1.1 # use the AWS CLI orb
+
+jobs:
+  verify-deployment:
+    executor: aws-cli/default
+    steps:
+      - aws-cli/install
+      - aws-cli/setup:
+          role-arn: 'arn:aws:iam::559050235107:role/deploy-ci'
+          aws-region: "us-east-1"
+          # optional parameters
+          profile-name: "OIDC-PROFILE"
+          role-session-name: "OIDC-session"
+          session-duration: 1800
+
+workflows:
+  build-and-deploy:
+    jobs:
+      - aws-ecr/build_and_push_image: # orb built-in job
+          auth:
+            - aws-cli/setup:
+                role_arn: 'arn:aws:iam::559050235107:role/deploy-ci'
+          repo: 'loc8-api'
+          account_id: '559050235107'
+          tag: '${CIRCLE_BRANCH}'
+          filters:
+            branches:
+              only:
+                - dev
+                - prod
+
+      - aws-ecs/deploy_service_update: # orb built-in job
+          requires:
+            - aws-ecr/build_and_push_image
+          auth:
+            - aws-cli/setup:
+                role_arn: 'arn:aws:iam::559050235107:role/deploy-ci'
+          service_name: 'loc8-backend'
+          family: 'loc8-api-def-${CIRCLE_BRANCH}'
+          cluster: 'loc8-${CIRCLE_BRANCH}'
+          container_image_name_updates: 'container=api,tag=${CIRCLE_BRANCH}'
+          filters:
+            branches:
+              only:
+                - dev
+                - prod

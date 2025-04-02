@@ -1,0 +1,23 @@
+version: '3.3'
+volumes:
+  postgis-data: {}
+  node-modules: {}
+services:
+  postgres:
+    image: postgis/postgis:15-3.3
+    volumes:
+      - 'postgis-data:/var/lib/postgresql'
+#      - ./db/schema.sql:/docker-entrypoint-initdb.d/setup-db.sql
+    environment:
+      - POSTGRES_DB=rentrust
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123698745
+      - ALLOW_IP_RANGE=0.0.0.0/0
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+  redis:
+    image: redis:latest
+    ports:
+      - "6378:6379"
