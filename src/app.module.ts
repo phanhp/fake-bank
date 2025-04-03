@@ -9,6 +9,7 @@ import { AllExceptionsFilter } from './common/HttpException';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
 import { BankAccountModule } from './modules/bankAccount/bankAccount.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BankAccountModule } from './modules/bankAccount/bankAccount.module';
     }),
     DatabaseModule,
     BankAccountModule,
+    TransactionModule,
     I18nModule.forRootAsync({
       useFactory: () => ({
         fallbackLanguage: 'en',

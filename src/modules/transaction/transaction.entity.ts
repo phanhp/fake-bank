@@ -29,8 +29,8 @@ export class Transaction extends BaseEntity {
     nullable: false,
     default: ETransactionStatus.PENDING,
   })
-  @ApiProperty({ type: Number })
-  status: number;
+  @ApiProperty({ type: String })
+  status: string;
 
   @Column({
     type: 'text',
@@ -38,6 +38,14 @@ export class Transaction extends BaseEntity {
   })
   @ApiProperty({ type: Number })
   type: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    default: '',
+  })
+  @ApiProperty({ type: String })
+  description: string;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   @ApiProperty({ type: Date })

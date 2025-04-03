@@ -1,4 +1,4 @@
-import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BankAccountService } from './bankAccount.service';
 
@@ -6,6 +6,11 @@ import { BankAccountService } from './bankAccount.service';
 @Controller('bankAccounts')
 export class BankAccountController {
   constructor(private readonly service: BankAccountService) {}
+
+  @Get('/')
+  findAll() {
+    return this.service.findAll();
+  }
 
   @HttpCode(HttpStatus.OK)
   @Post('/example/create-base')

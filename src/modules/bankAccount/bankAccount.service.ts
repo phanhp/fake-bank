@@ -3,7 +3,11 @@ import { TypeOrmCrudService } from '@dataui/crud-typeorm';
 import { BankAccount } from './bankAccount.entity';
 import { ERepository, ESearchParam } from 'src/utils/enum/config.enum';
 import { Repository } from 'typeorm';
-import { CreateBankAccountDto, SearchBankAccountDto } from './bankAccount.dto';
+import {
+  BaseBankAccountDto,
+  CreateBankAccountDto,
+  SearchBankAccountDto,
+} from './bankAccount.dto';
 import { plainToClass } from 'class-transformer';
 import { CrudOptions, CrudRequest } from '@dataui/crud';
 import AppUtils from 'src/utils/app.util';
@@ -201,6 +205,19 @@ export class BankAccountService extends TypeOrmCrudService<BankAccount> {
       crudOptions: crudOptions,
       crudRequest: crudRequest,
     };
+  }
+
+  //----- UPDATE
+  async update({
+    bankAccount,
+    input,
+  }: {
+    bankAccount: BankAccount;
+    input?: BaseBankAccountDto;
+  }): Promise<BankAccount> {
+    return this.repo.save(
+      plainToClass(BankAccount, { ...bankAccount, ...input }),
+    );
   }
 
   //----- EXAMPLE
